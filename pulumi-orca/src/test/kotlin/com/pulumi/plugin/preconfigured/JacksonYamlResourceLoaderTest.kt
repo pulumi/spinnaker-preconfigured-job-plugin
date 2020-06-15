@@ -15,7 +15,7 @@ class JacksonYamlResourceLoaderTest : JUnit5Minutests {
     fun tests() = rootContext {
         test("should successfully parse the Pulumi yaml configuration") {
             val subject: ObjectMapper = ObjectMapper(YAMLFactory()).disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            val job = subject.readValue(File("src/main/resources/com/pulumi/preconfigured/pulumi.yaml"), KubernetesPreconfiguredJobProperties::class.java)
+            val job = subject.readValue(File("src/main/resources/com/pulumi/plugin/preconfigured/pulumi.yaml"), KubernetesPreconfiguredJobProperties::class.java)
             assertNotNull(job.account)
             assertNotNull(job.manifest)
             assertNotNull(job.manifest?.spec)
