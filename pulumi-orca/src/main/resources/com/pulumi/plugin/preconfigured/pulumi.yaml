@@ -1,0 +1,75 @@
+label: Pulumi
+# type should be some unique value.
+type: pulumiRunJob
+description: 'Run a Pulumi command using the pulumi/pulumi container.'
+cloudProvider: kubernetes
+account: spinnaker
+credentials: spinnaker
+waitForCompletion: true
+application: pulumi
+parameters:
+  - name: Git Repo URL
+    label: Git Repo URL
+    description: 'The repo URL to clone from. For HTTPS URLs, specify the username and password as placeholders in the URL that map to the key names of secrets (see the Secrets Name parameter below). For SSH URLs, the plugin configuration must be updated to specify the volume name for the SSH configuration files to use. The volume would be mounted as ~/.ssh in the container'
+    mapping: manifest.spec.template.spec.containers[0].env[0].value
+    defaultValue: ""
+  - name: Restore Dependencies Command
+    label: Restore Dependencies Command
+    description: The command to execute in order to restore dependencies for the Pulumi app.
+    mapping: manifest.spec.template.spec.containers[0].env[1].value
+    defaultValue: "yarn install --cwd /app"
+  - name: Pulumi Version
+    label: Pulumi Version
+    description: The version of the Docker image to run as a container, which will contain the corresponding Pulumi CLI version.
+    mapping: manifest.spec.template.spec.containers[0].image
+    defaultValue: "pulumi/pulumi:latest"
+  - name: Command
+    label: Command
+    description: The Pulumi stack name against which the command should be executed.
+    mapping: manifest.spec.template.spec.containers[0].env[2].value
+    defaultValue: "preview"
+  - name: Command Args
+    label: Command Args
+    description: The args to pass to the Pulumi command.
+    mapping: manifest.spec.template.spec.containers[0].env[3].value
+    defaultValue: ""
+  - name: Backend URL
+    label: Backend URL
+    description: The backend URL to use when logging into the Pulumi CLI. Uses the Pulumi Managed Service backend, by default.
+    mapping: manifest.spec.template.spec.containers[0].env[4].value
+    defaultValue: "https://api.pulumi.com"
+  - name: Secrets Name
+    label: Secrets Name
+    description: The name of the Kubernetes secrets resource from which additional environment variables will be set for the job.
+    mapping: manifest.spec.template.spec.containers[0].envFrom[0].secretRef.name
+    defaultValue: "pulumi-secrets"
+manifest:
+  apiVersion: batch/v1
+  kind: Job
+  metadata:
+    name: run-pulumi
+    namespace: spinnaker
+  spec:
+    backoffLimit: 0
+    template:
+      spec:
+        restartPolicy: Never
+        containers:
+          - name: pulumi
+            image: pulumi/pulumi:latest
+            command: ["/bin/sh"]
+            args: ["-c", "pulumi version && git clone $(GIT_REPO_URL) /app && $(RESTORE_CMD) && pulumi $(PULUMI_COMMAND) $(PULUMI_COMMAND_ARGS)"]
+            env:
+              - name: GIT_REPO_URL
+                value: fakevalue
+              - name: RESTORE_CMD
+                value: fakevalue
+              - name: PULUMI_COMMAND
+                value: fakevalue
+              - name: PULUMI_COMMAND_ARGS
+                value: fakevalue
+              - name: PULUMI_BACKEND_URL
+                value: fakevalue
+            envFrom:
+            - secretRef:
+                name: pulumiSecrets

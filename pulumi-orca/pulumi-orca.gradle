@@ -1,0 +1,57 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+apply plugin: "io.spinnaker.plugin.service-extension"
+apply plugin: "maven-publish"
+apply plugin: 'kotlin'
+apply plugin: 'kotlin-kapt'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url "http://dl.bintray.com/spinnaker/spinnaker/" }
+}
+
+spinnakerPlugin {
+    serviceName = "orca"
+    pluginClass = "com.pulumi.plugin.preconfigured.PulumiPlugin"
+}
+
+dependencies {
+    compileOnly(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}") {
+        exclude group: "org.slf4j"
+    }
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
+    compileOnly (group: 'com.netflix.spinnaker.kork', name: 'kork-plugins-api', version: "${korkVersion}")
+    compileOnly (group: 'com.netflix.spinnaker.orca', name: 'orca-api', version: "${orcaVersion}")
+    compileOnly (group: 'com.netflix.spinnaker.orca', name: 'orca-clouddriver', version: "${orcaVersion}")
+    compileOnly (group: 'io.kubernetes', name: 'client-java', version: "${k8sClientVersion}")
+
+    kapt(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}")
+
+    testImplementation (group: 'com.netflix.spinnaker.orca', name: 'orca-api', version: "${orcaVersion}")
+    testImplementation (group: 'com.netflix.spinnaker.orca', name: 'orca-clouddriver', version: "${orcaVersion}")
+    testImplementation (group: 'io.kubernetes', name: 'client-java', version: "${k8sClientVersion}")
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.5.2"
+    testImplementation "org.jetbrains.kotlin:kotlin-test"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit"
+    testImplementation group: 'io.strikt', name: 'strikt-core', version: '0.22.1'
+    testImplementation group: 'dev.minutest', name: 'minutest', version: '1.10.0'
+    testImplementation group: 'io.mockk', name: 'mockk', version: '1.9.3'
+    testImplementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.10.4'
+
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.4.0"
+    testRuntime "org.junit.platform:junit-platform-launcher:1.4.0"
+    testRuntime "org.junit.platform:junit-platform-commons:1.5.2"
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+}
