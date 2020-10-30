@@ -4,7 +4,6 @@ type: pulumiRunJob
 description: 'Run a Pulumi command using the pulumi/pulumi container.'
 cloudProvider: kubernetes
 account: spinnaker
-credentials: spinnaker
 waitForCompletion: true
 application: pulumi
 parameters:
