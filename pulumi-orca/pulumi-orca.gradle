@@ -35,6 +35,9 @@ dependencies {
 
     kapt(group: 'org.pf4j', name: 'pf4j', version: "${pf4jVersion}")
 
+    testImplementation (group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: "${kotlinVersion}")
+    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}"
+    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
     testImplementation (group: 'com.netflix.spinnaker.orca', name: 'orca-api', version: "${orcaVersion}")
     testImplementation (group: 'com.netflix.spinnaker.orca', name: 'orca-clouddriver', version: "${orcaVersion}")
     testImplementation (group: 'io.kubernetes', name: 'client-java', version: "${k8sClientVersion}")
