@@ -1,12 +1,11 @@
-label: Pulumi
-# type should be some unique value.
-type: pulumiRunJob
-description: 'Run Pulumi as a RunJob container.'
-cloudProvider: kubernetes
+type: preconfiguredJob
 account: spinnaker
-waitForCompletion: true
 application: pulumi
+cloudProvider: kubernetes
+description: 'Run Pulumi as a RunJob container.'
+label: Pulumi
 uiType: CUSTOM
+waitForCompletion: true
 parameters:
   - name: account
     mapping: account
