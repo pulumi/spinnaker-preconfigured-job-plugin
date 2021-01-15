@@ -1,8 +1,7 @@
 import React from 'react';
-import { defaults } from 'lodash';
 
-import { FormikStageConfig, IStage, IStageConfigProps } from '@spinnaker/core';
-import { DEFAULT_PLUGIN_PROPS, PulumiStageForm } from './PulumiStageForm';
+import { FormikStageConfig, IStageConfigProps } from '@spinnaker/core';
+import { PulumiStageForm } from './PulumiStageForm';
 
 export class PulumiStageConfig extends React.Component<IStageConfigProps> {
   public render() {
@@ -11,9 +10,7 @@ export class PulumiStageConfig extends React.Component<IStageConfigProps> {
         {...this.props}
         onChange={this.props.updateStage}
         application="pulumi"
-        render={(props) => (
-          <PulumiStageForm {...props} {...DEFAULT_PLUGIN_PROPS} stageFieldUpdated={this.props.stageFieldUpdated} />
-        )}
+        render={(props) => <PulumiStageForm {...props} />}
       />
     );
   }

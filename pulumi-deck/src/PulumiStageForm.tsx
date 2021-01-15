@@ -8,7 +8,6 @@ import {
   IFormikStageConfigInjectedProps,
   noop,
   ReactSelectInput,
-  SelectInput,
   SETTINGS,
   StageConfigField,
   TextInput,
@@ -41,53 +40,34 @@ export interface IPulumiPluginProps extends IPulumiProps {
   stageFieldUpdated?(): void;
 }
 
-const DEFAULT_CORE_PROPS: IPulumiProps = {
-  gitRepoUrl: '',
-  workingDir: '/app',
-  backendUrl: 'https://api.pulumi.com',
-  pulCommand: 'preview',
-  pulCmdArgs: '',
-  containerImage: 'pulumi/pulumi:latest',
-  restoreDependenciesCmd: 'yarn install',
-  k8sSecretsName: 'pulumi-secrets',
-};
-
-export const DEFAULT_PLUGIN_PROPS: IPulumiPluginProps = {
-  account: 'spinnaker',
-  namespace: 'spinnaker',
-  ...DEFAULT_CORE_PROPS,
-};
-
 export interface IPulumiPluginState {
   accounts: IAccountDetails[];
   namespaces: string[];
-  pluginProps: IPulumiPluginProps;
 }
 
-export class PulumiStageForm extends React.Component<
-  IPulumiPluginProps & IFormikStageConfigInjectedProps,
-  IPulumiPluginState
-> {
-  constructor(props: IPulumiPluginProps & IFormikStageConfigInjectedProps) {
+export class PulumiStageForm extends React.Component<IFormikStageConfigInjectedProps, IPulumiPluginState> {
+  constructor(props: IFormikStageConfigInjectedProps) {
     super(props);
 
     this.state = {
-      pluginProps: props,
       accounts: [],
       namespaces: [],
     };
   }
 
   public async componentDidMount(): Promise<void> {
-    await this.loadAccounts();
+    if (!this.state.accounts || !this.state.accounts.length) {
+      try {
+        await this.loadAccounts();
+      } catch (err) {
+        console.error('Error loading accounts for kubernetes provider', err);
+      }
+    }
   }
 
   private isExpression = (value: string): boolean => (typeof value === 'string' ? value.includes('${') : false);
 
   public setStateAndUpdateStage(state: Partial<IPulumiPluginState>, cb?: () => void) {
-    if (state.pluginProps && this.props.stageFieldUpdated) {
-      this.props.stageFieldUpdated();
-    }
     this.setState(state as IPulumiPluginState, cb || noop);
   }
 
@@ -95,31 +75,29 @@ export class PulumiStageForm extends React.Component<
     const accounts = await AccountService.getAllAccountDetailsForProvider('kubernetes');
     this.setStateAndUpdateStage({ accounts });
 
-    const stateProps = this.state.pluginProps;
+    const parameters = this.props.formik.values['parameters'] as IPulumiPluginProps;
 
     // If an account hasn't been selected, then find the default account and
     // set that as the initial value.
-    if (!stateProps.account && accounts.length > 0) {
-      stateProps.account = accounts.some((e) => e.name === SETTINGS.providers.kubernetes.defaults.account)
+    if (!parameters.account && accounts.length > 0) {
+      parameters.account = accounts.some((e) => e.name === SETTINGS.providers.kubernetes.defaults.account)
         ? SETTINGS.providers.kubernetes.defaults.account
         : accounts[0].name;
     }
-    this.handleAccountChange(stateProps.account);
+    this.handleAccountChange(parameters.account);
   }
 
   private handleAccountChange(selectedAccount: string) {
+    this.props.formik.setFieldValue('parameters.account', selectedAccount);
     const details = (this.state.accounts || []).find((account) => account.name === selectedAccount);
     if (!details) {
       return;
     }
 
     const namespaces = (details.namespaces || []).sort();
-    let namespace = this.state.pluginProps.namespace;
-    if (
-      !this.isExpression(this.state.pluginProps.namespace) &&
-      namespaces.every((ns) => ns !== this.state.pluginProps.namespace)
-    ) {
-      namespace = null;
+    const namespace = (this.props.formik.values['parameters'] as IPulumiPluginProps).namespace;
+    if (!this.isExpression(namespace) && namespaces.every((ns) => ns !== namespace)) {
+      this.props.formik.setFieldValue('parameters.namespace', null);
     }
 
     this.setStateAndUpdateStage({
@@ -128,16 +106,11 @@ export class PulumiStageForm extends React.Component<
   }
 
   private handleNamespaceChange(selectedNamespace: string) {
-    this.setStateAndUpdateStage({
-      pluginProps: {
-        ...this.state.pluginProps,
-        namespace: selectedNamespace,
-      },
-    });
+    this.props.formik.setFieldValue('parameters.namespace', selectedNamespace);
   }
 
   public render() {
-    const pluginProps = this.props;
+    const { account, namespace } = this.props.formik.values['parameters'];
     const { accounts, namespaces } = this.state;
 
     return (
@@ -145,9 +118,8 @@ export class PulumiStageForm extends React.Component<
         <h4>Account and Namespace</h4>
         <StageConfigField label="Account">
           <AccountSelectInput
-            name="parameters.account"
             renderFilterableSelectThreshold={1}
-            value={pluginProps.account}
+            value={account}
             onChange={(evt: any) => this.handleAccountChange(evt.target.value)}
             accounts={accounts}
             provider="'kubernetes'"
@@ -155,10 +127,10 @@ export class PulumiStageForm extends React.Component<
         </StageConfigField>
         <StageConfigField label="Namespace">
           <ReactSelectInput
-            name="parameters.namespace"
             clearable={false}
-            value={{ value: pluginProps.namespace, label: pluginProps.namespace }}
+            value={namespace}
             options={namespaces.map((ns) => ({ value: ns, label: ns }))}
+            onChange={(evt: any) => this.handleNamespaceChange(evt.target.value)}
           />
         </StageConfigField>
 
@@ -175,6 +147,11 @@ export class PulumiStageForm extends React.Component<
           label="Restore Dependencies Command"
           input={(props) => <TextInput {...props} />}
         />
+        <FormikFormField
+          name="parameters.workingDir"
+          label="Working Directory"
+          input={(props) => <TextInput {...props} />}
+        />
 
         <hr />
 
@@ -184,30 +161,17 @@ export class PulumiStageForm extends React.Component<
           label="Container Image"
           input={(props) => <TextInput {...props} />}
         />
-        <FormikFormField
-          name="parameters.pulCommand"
-          label="Command"
-          input={(props) => <TextInput {...props} value={pluginProps.pulCommand} />}
-        />
+        <FormikFormField name="parameters.pulCommand" label="Command" input={(props) => <TextInput {...props} />} />
         <FormikFormField
           name="parameters.pulCmdArgs"
           label="Command Args"
-          input={(props) => <TextInput {...props} value={pluginProps.pulCmdArgs} />}
+          input={(props) => <TextInput {...props} />}
         />
-        <FormikFormField
-          name="parameters.backendUrl"
-          label="Backend URL"
-          input={(props) => <TextInput {...props} value={pluginProps.backendUrl} />}
-        />
+        <FormikFormField name="parameters.backendUrl" label="Backend URL" input={(props) => <TextInput {...props} />} />
         <FormikFormField
           name="parameters.k8sSecretsName"
           label="Secrets Resource Name"
-          input={(props) => <TextInput {...props} value={pluginProps.k8sSecretsName} />}
-        />
-        <FormikFormField
-          name="parameters.workingDir"
-          label="Working Directory"
-          input={(props) => <TextInput {...props} value={pluginProps.workingDir} />}
+          input={(props) => <TextInput {...props} />}
         />
       </>
     );

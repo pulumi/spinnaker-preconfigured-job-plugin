@@ -3,6 +3,8 @@ import {
   IDeckPlugin,
 } from '@spinnaker/core';
 
+import { RunJobExecutionDetails } from "@spinnaker/kubernetes/lib/pipelines/stages/runJob/RunJobExecutionDetails";
+
 import { PulumiStageConfig } from './PulumiStageConfig';
 
 export const plugin: IDeckPlugin = {
@@ -13,6 +15,6 @@ export const plugin: IDeckPlugin = {
     cloudProvider: 'kubernetes',
     component: PulumiStageConfig,
     description: 'Deploy cloud resources using Pulumi',
-    executionDetailsSections: [ExecutionDetailsTasks],
+    executionDetailsSections: [RunJobExecutionDetails, ExecutionDetailsTasks],
   }],
 };

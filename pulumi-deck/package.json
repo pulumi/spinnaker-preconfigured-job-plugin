@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@spinnaker/core": "0.0.540",
+    "@spinnaker/kubernetes": "^0.0.57",
     "@spinnaker/pluginsdk": "0.0.23",
     "@spinnaker/pluginsdk-peerdeps": "0.0.5",
     "@uirouter/core": "6.0.4",
@@ -36,6 +37,7 @@
     "eslint": "7.10.0",
     "eslint-config-prettier": "6.12.0",
     "eslint-plugin-react-hooks": "4.1.2",
+    "formik": "1.4.1",
     "husky": "4.3.7",
     "lodash": "^4.17.20",
     "npm-run-all": "4.1.5",
