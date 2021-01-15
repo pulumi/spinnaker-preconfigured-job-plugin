@@ -124,11 +124,6 @@ export class PulumiStageForm extends React.Component<
 
     this.setStateAndUpdateStage({
       namespaces,
-      pluginProps: {
-        ...this.state.pluginProps,
-        account: selectedAccount,
-        namespace,
-      },
     });
   }
 
@@ -150,6 +145,7 @@ export class PulumiStageForm extends React.Component<
         <h4>Account and Namespace</h4>
         <StageConfigField label="Account">
           <AccountSelectInput
+            name="parameters.account"
             renderFilterableSelectThreshold={1}
             value={pluginProps.account}
             onChange={(evt: any) => this.handleAccountChange(evt.target.value)}
@@ -159,19 +155,23 @@ export class PulumiStageForm extends React.Component<
         </StageConfigField>
         <StageConfigField label="Namespace">
           <ReactSelectInput
+            name="parameters.namespace"
             clearable={false}
             value={{ value: pluginProps.namespace, label: pluginProps.namespace }}
             options={namespaces.map((ns) => ({ value: ns, label: ns }))}
-            onChange={(evt: any) => this.handleNamespaceChange(evt.target.value)}
           />
         </StageConfigField>
 
         <hr />
 
         <h4>Repository Options</h4>
-        <FormikFormField name="gitRepoUrl" label="Git Repo URL" input={(props) => <TextInput {...props} />} />
         <FormikFormField
-          name="restoreDepsCmd"
+          name="parameters.gitRepoUrl"
+          label="Git Repo URL"
+          input={(props) => <TextInput {...props} />}
+        />
+        <FormikFormField
+          name="parameters.restoreDepsCmd"
           label="Restore Dependencies Command"
           input={(props) => <TextInput {...props} />}
         />
@@ -180,32 +180,32 @@ export class PulumiStageForm extends React.Component<
 
         <h4>Pulumi Options</h4>
         <FormikFormField
-          name="containerImage"
+          name="parameters.containerImage"
           label="Container Image"
-          input={(props) => <TextInput {...props} value={pluginProps.containerImage} />}
+          input={(props) => <TextInput {...props} />}
         />
         <FormikFormField
-          name="pulCommand"
+          name="parameters.pulCommand"
           label="Command"
           input={(props) => <TextInput {...props} value={pluginProps.pulCommand} />}
         />
         <FormikFormField
-          name="pulCmdArgs"
+          name="parameters.pulCmdArgs"
           label="Command Args"
           input={(props) => <TextInput {...props} value={pluginProps.pulCmdArgs} />}
         />
         <FormikFormField
-          name="backendUrl"
+          name="parameters.backendUrl"
           label="Backend URL"
           input={(props) => <TextInput {...props} value={pluginProps.backendUrl} />}
         />
         <FormikFormField
-          name="k8sSecretsName"
+          name="parameters.k8sSecretsName"
           label="Secrets Resource Name"
           input={(props) => <TextInput {...props} value={pluginProps.k8sSecretsName} />}
         />
         <FormikFormField
-          name="workingDir"
+          name="parameters.workingDir"
           label="Working Directory"
           input={(props) => <TextInput {...props} value={pluginProps.workingDir} />}
         />

@@ -6,8 +6,8 @@ import {
 import { PulumiStageConfig } from './PulumiStageConfig';
 
 export const plugin: IDeckPlugin = {
-  stages: [{
-    key: 'pulumi',
+  preconfiguredJobStages: [{
+    key: 'preconfiguredJob',
     label: 'Run Pulumi',
   
     cloudProvider: 'kubernetes',

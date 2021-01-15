@@ -10,6 +10,7 @@ export class PulumiStageConfig extends React.Component<IStageConfigProps> {
       <FormikStageConfig
         {...this.props}
         onChange={this.props.updateStage}
+        application="pulumi"
         render={(props) => (
           <PulumiStageForm {...props} {...DEFAULT_PLUGIN_PROPS} stageFieldUpdated={this.props.stageFieldUpdated} />
         )}
