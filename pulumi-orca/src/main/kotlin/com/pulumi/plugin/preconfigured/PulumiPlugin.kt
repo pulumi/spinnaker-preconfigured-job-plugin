@@ -21,24 +21,12 @@ class PulumiPlugin(wrapper: PluginWrapper): Plugin(wrapper) {
 }
 
 @Extension
-class PulumiPreConfiguredStage(val pluginSdks: PluginSdks, val configuration: PluginConfig) : PreconfiguredJobConfigurationProvider {
+class PulumiPreConfiguredStage(val pluginSdks: PluginSdks) : PreconfiguredJobConfigurationProvider {
     private val logger = LoggerFactory.getLogger(PulumiPreConfiguredStage::class.java)
 
     override fun getJobConfigurations(): List<KubernetesPreconfiguredJobProperties> {
         val jobProperties = pluginSdks.yamlResourceLoader().loadResource("com/pulumi/plugin/preconfigured/pulumi.yaml", KubernetesPreconfiguredJobProperties::class.java)
-        if (!configuration.account.isNullOrEmpty()) {
-            jobProperties.account = configuration.account
-        }
-        if (!configuration.namespace.isNullOrEmpty()) {
-            jobProperties.manifest.metadata.namespace = configuration.namespace
-        }
-        if (!configuration.sshConfigPath.isNullOrEmpty()) {
-            jobProperties.manifest.spec.template.spec.containers[0].addVolumeMountsItem(io.kubernetes.client.models.V1VolumeMount().mountPath(configuration.sshConfigPath))
-        }
 
-        if (configuration.logJobProperties == true) {
-            logger.info("Job properties: ${pluginSdks.serde().toJson(jobProperties)}");
-        }
         return arrayListOf(jobProperties)
     }
 }
