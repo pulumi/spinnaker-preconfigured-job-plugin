@@ -147,11 +147,6 @@ export class PulumiStageForm extends React.Component<IFormikStageConfigInjectedP
           label="Restore Dependencies Command"
           input={(props) => <TextInput {...props} />}
         />
-        <FormikFormField
-          name="parameters.workingDir"
-          label="Working Directory"
-          input={(props) => <TextInput {...props} />}
-        />
 
         <hr />
 
@@ -159,6 +154,11 @@ export class PulumiStageForm extends React.Component<IFormikStageConfigInjectedP
         <FormikFormField
           name="parameters.containerImage"
           label="Container Image"
+          input={(props) => <TextInput {...props} />}
+        />
+        <FormikFormField
+          name="parameters.workingDir"
+          label="Working Directory"
           input={(props) => <TextInput {...props} />}
         />
         <FormikFormField name="parameters.pulCommand" label="Command" input={(props) => <TextInput {...props} />} />
