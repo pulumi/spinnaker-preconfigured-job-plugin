@@ -47,7 +47,6 @@ export class PulumiRunJobExecutionDetails extends React.Component<IExecutionDeta
                   <dt>Logs</dt>
                   <dd>
                     <PulumiJobStageExecutionLogs
-                      isCompleted={stage.isCompleted}
                       deployedName={deployedName}
                       account={this.props.stage.context.account}
                       location={namespace}

@@ -13,7 +13,6 @@ interface IJobStageExecutionLogsProps {
   externalLink: string;
   podNameProvider: IPodNameProvider;
   location: string;
-  isCompleted: boolean;
 }
 
 interface IJobStageExecutionLogsState {
