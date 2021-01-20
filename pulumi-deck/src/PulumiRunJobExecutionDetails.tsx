@@ -7,11 +7,14 @@ import {
   AccountTag,
   DefaultPodNameProvider,
   IJobOwnedPodStatus,
-  StageFailureMessage,
 } from '@spinnaker/core';
 
 import { PulumiJobStageExecutionLogs } from './PulumiJobStageExecutionLogs';
 
+/**
+ * Provides an interface for displaying the logs of the Kubernetes
+ * pod that is running the Pulumi job.
+ */
 export class PulumiRunJobExecutionDetails extends React.Component<IExecutionDetailsSectionProps> {
   public static title = 'runJobConfig';
 

@@ -19,6 +19,9 @@ interface IJobStageExecutionLogsState {
   manifest?: IManifest;
 }
 
+/**
+ * Provides a link to open a modal dialog for viewing a Kubernetes pod's logs.
+ */
 export class PulumiJobStageExecutionLogs extends React.Component<
   IJobStageExecutionLogsProps,
   IJobStageExecutionLogsState

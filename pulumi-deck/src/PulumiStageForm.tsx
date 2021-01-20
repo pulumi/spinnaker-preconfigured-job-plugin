@@ -4,6 +4,7 @@ import {
   AccountSelectInput,
   AccountService,
   FormikFormField,
+  HelpField,
   IAccountDetails,
   IFormikStageConfigInjectedProps,
   noop,
@@ -138,40 +139,74 @@ export class PulumiStageForm extends React.Component<IFormikStageConfigInjectedP
 
         <h4>Repository Options</h4>
         <FormikFormField
-          name="parameters.gitRepoUrl"
-          label="Git Repo URL"
+          help={
+            <HelpField content="The working directory where the repository will be cloned into. All commands will be run in the context of this directory." />
+          }
           input={(props) => <TextInput {...props} />}
+          label="Working Directory"
+          name="parameters.workingDir"
         />
         <FormikFormField
-          name="parameters.restoreDepsCmd"
-          label="Restore Dependencies Command"
+          help={
+            <HelpField
+              content="The repo URL to clone from. For HTTPS URLs, specify the username and password as placeholders in the URL 
+            that map to the key names of secrets (see the Secrets Name parameter below). For SSH URLs, the plugin configuration must be
+            updated to specify the volume name for the SSH configuration files to use. The volume would be mounted as ~/.ssh in the
+            container."
+            />
+          }
           input={(props) => <TextInput {...props} />}
+          label="Git Repo URL"
+          name="parameters.gitRepoUrl"
+        />
+        <FormikFormField
+          help={<HelpField content="The command to execute in order to restore dependencies for the Pulumi app." />}
+          input={(props) => <TextInput {...props} />}
+          label="Restore Dependencies Command"
+          name="parameters.restoreDepsCmd"
         />
 
         <hr />
 
         <h4>Pulumi Options</h4>
         <FormikFormField
-          name="parameters.containerImage"
+          help={
+            <HelpField
+              content="The container image to use for the RunJob. You may use a private image or one of Pulumi's public images.
+            The image must contain the Pulumi CLI as well as the language runtime used your Pulumi apps."
+            />
+          }
+          input={(props) => <TextInput {...props} />}
           label="Container Image"
-          input={(props) => <TextInput {...props} />}
+          name="parameters.containerImage"
         />
         <FormikFormField
-          name="parameters.workingDir"
-          label="Working Directory"
+          help={<HelpField content="The Pulumi stack name against which the command should be executed." />}
           input={(props) => <TextInput {...props} />}
+          label="Command"
+          name="parameters.pulCommand"
         />
-        <FormikFormField name="parameters.pulCommand" label="Command" input={(props) => <TextInput {...props} />} />
         <FormikFormField
-          name="parameters.pulCmdArgs"
+          help={<HelpField content="The args to pass to the Pulumi command." />}
+          input={(props) => <TextInput {...props} />}
           label="Command Args"
-          input={(props) => <TextInput {...props} />}
+          name="parameters.pulCmdArgs"
         />
-        <FormikFormField name="parameters.backendUrl" label="Backend URL" input={(props) => <TextInput {...props} />} />
         <FormikFormField
-          name="parameters.k8sSecretsName"
-          label="Secrets Resource Name"
+          help={
+            <HelpField content="The backend URL to use when logging into the Pulumi CLI. Uses the Pulumi Managed Service backend, by default." />
+          }
           input={(props) => <TextInput {...props} />}
+          label="Backend URL"
+          name="parameters.backendUrl"
+        />
+        <FormikFormField
+          help={
+            <HelpField content="The name of the Kubernetes secrets resource from which additional environment variables will be set for the job." />
+          }
+          input={(props) => <TextInput {...props} />}
+          label="Secrets Resource Name"
+          name="parameters.k8sSecretsName"
         />
       </>
     );

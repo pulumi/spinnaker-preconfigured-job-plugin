@@ -14,11 +14,6 @@ export class PulumiJobManifestPodLogs extends JobManifestPodLogs {
     clearTimeout(this.timeoutId);
   }
 
-  private canShowModal(): boolean {
-    const { podNameProvider } = this.props;
-    return podNameProvider.getPodName() !== '';
-  }
-
   private getResourceRegion(): string {
     return this.props.location;
   }
@@ -57,77 +52,5 @@ export class PulumiJobManifestPodLogs extends JobManifestPodLogs {
     } catch (exception) {
       this.setState({ errorMessage: exception.data.message });
     }
-  }
-
-  public render() {
-    const { showModal, containerLogs, errorMessage, selectedContainerLog } = this.state;
-    if (!this.canShowModal()) {
-      return null;
-    }
-
-    return (
-      <div>
-        <a onClick={this.onClick} className="clickable">
-          {this.props.linkName}
-        </a>
-        <div
-          className={classNames({
-            'modal-mask': true,
-            'show-modal': showModal,
-          })}
-        >
-          <div className="modal-wrapper">
-            <div className="modal-container">
-              <div className="modal-title">
-                <h4 className="modal-title-text">Console Output: {this.getPodName()} </h4>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    this.close();
-                  }}
-                >
-                  x
-                </a>
-              </div>
-
-              <div className="modal-body">
-                {containerLogs.length && (
-                  <>
-                    <ul className="tabs-basic console-output-tabs">
-                      {containerLogs.map((log) => (
-                        <li
-                          key={log.name}
-                          className={classNames('console-output-tab', {
-                            selected: log.name === selectedContainerLog.name,
-                          })}
-                          onClick={() => this.selectLog(log)}
-                        >
-                          {log.name}
-                        </li>
-                      ))}
-                    </ul>
-                    <pre className="body-small flex-fill">{selectedContainerLog.output}</pre>
-                  </>
-                )}
-                {errorMessage && <pre className="body-small">{errorMessage}</pre>}
-              </div>
-
-              <div className="modal-footer">
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    this.close();
-                  }}
-                >
-                  Close
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
   }
 }
