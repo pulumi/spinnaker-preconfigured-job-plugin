@@ -1,9 +1,5 @@
 import { IInstanceMultiOutputLog, InstanceReader, JobManifestPodLogs } from '@spinnaker/core';
 
-import classNames from 'classnames';
-
-import React from 'react';
-
 import './pod-logs.less';
 
 export class PulumiJobManifestPodLogs extends JobManifestPodLogs {
@@ -50,6 +46,7 @@ export class PulumiJobManifestPodLogs extends JobManifestPodLogs {
 
       this.timeoutId = setTimeout(async () => await this.fetchConsoleOutput(), this.consoleOutputFetchIntervalMs);
     } catch (exception) {
+      clearTimeout(this.timeoutId);
       this.setState({ errorMessage: exception.data.message });
     }
   }

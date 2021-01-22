@@ -66,8 +66,6 @@ export class PulumiStageForm extends React.Component<IFormikStageConfigInjectedP
     }
   }
 
-  private isExpression = (value: string): boolean => (typeof value === 'string' ? value.includes('${') : false);
-
   public setStateAndUpdateStage(state: Partial<IPulumiPluginState>, cb?: () => void) {
     this.setState(state as IPulumiPluginState, cb || noop);
   }
@@ -96,8 +94,11 @@ export class PulumiStageForm extends React.Component<IFormikStageConfigInjectedP
     }
 
     const namespaces = (details.namespaces || []).sort();
+    // Check if the previously selected namespace is still applicable in the newly selected account.
     const namespace = (this.props.formik.values['parameters'] as IPulumiPluginProps).namespace;
-    if (!this.isExpression(namespace) && namespaces.every((ns) => ns !== namespace)) {
+    if (namespaces.every((ns) => ns !== namespace)) {
+      // Set the previously selected namespace to null since it is not available under the currently
+      // selected account.
       this.props.formik.setFieldValue('parameters.namespace', null);
     }
 
@@ -137,15 +138,19 @@ export class PulumiStageForm extends React.Component<IFormikStageConfigInjectedP
 
         <hr />
 
-        <h4>Repository Options</h4>
         <FormikFormField
           help={
-            <HelpField content="The working directory where the repository will be cloned into. All commands will be run in the context of this directory." />
+            <HelpField content="The directory where the repository should be cloned. All commands will be run in the context of this directory." />
           }
           input={(props) => <TextInput {...props} />}
           label="Working Directory"
           name="parameters.workingDir"
+          required={true}
         />
+
+        <hr />
+
+        <h4>Repository Options</h4>
         <FormikFormField
           help={
             <HelpField
@@ -158,12 +163,14 @@ export class PulumiStageForm extends React.Component<IFormikStageConfigInjectedP
           input={(props) => <TextInput {...props} />}
           label="Git Repo URL"
           name="parameters.gitRepoUrl"
+          required={true}
         />
         <FormikFormField
           help={<HelpField content="The command to execute in order to restore dependencies for the Pulumi app." />}
           input={(props) => <TextInput {...props} />}
           label="Restore Dependencies Command"
           name="parameters.restoreDepsCmd"
+          required={true}
         />
 
         <hr />
@@ -173,24 +180,27 @@ export class PulumiStageForm extends React.Component<IFormikStageConfigInjectedP
           help={
             <HelpField
               content="The container image to use for the RunJob. You may use a private image or one of Pulumi's public images.
-            The image must contain the Pulumi CLI as well as the language runtime used your Pulumi apps."
+            The image must contain the Pulumi CLI as well as the language runtime used by your Pulumi app."
             />
           }
           input={(props) => <TextInput {...props} />}
           label="Container Image"
           name="parameters.containerImage"
+          required={true}
         />
         <FormikFormField
-          help={<HelpField content="The Pulumi stack name against which the command should be executed." />}
+          help={<HelpField content="The Pulumi command to execute. Eg. preview, up, destroy, refresh etc." />}
           input={(props) => <TextInput {...props} />}
           label="Command"
           name="parameters.pulCommand"
+          required={true}
         />
         <FormikFormField
           help={<HelpField content="The args to pass to the Pulumi command." />}
           input={(props) => <TextInput {...props} />}
           label="Command Args"
           name="parameters.pulCmdArgs"
+          required={true}
         />
         <FormikFormField
           help={
@@ -199,6 +209,7 @@ export class PulumiStageForm extends React.Component<IFormikStageConfigInjectedP
           input={(props) => <TextInput {...props} />}
           label="Backend URL"
           name="parameters.backendUrl"
+          required={true}
         />
         <FormikFormField
           help={
@@ -207,6 +218,7 @@ export class PulumiStageForm extends React.Component<IFormikStageConfigInjectedP
           input={(props) => <TextInput {...props} />}
           label="Secrets Resource Name"
           name="parameters.k8sSecretsName"
+          required={true}
         />
       </>
     );

@@ -7,6 +7,7 @@ import {
   AccountTag,
   DefaultPodNameProvider,
   IJobOwnedPodStatus,
+  StageFailureMessage,
 } from '@spinnaker/core';
 
 import { PulumiJobStageExecutionLogs } from './PulumiJobStageExecutionLogs';
@@ -36,6 +37,7 @@ export class PulumiRunJobExecutionDetails extends React.Component<IExecutionDeta
 
     return (
       <ExecutionDetailsSection name={name} current={current}>
+        <StageFailureMessage stage={stage} message={stage.failureMessage} />
         <div className="row">
           <div className="col-md-9">
             <dl className="dl-narrow dl-horizontal">
@@ -60,7 +62,7 @@ export class PulumiRunJobExecutionDetails extends React.Component<IExecutionDeta
                   </dd>
                 </>
               )}
-              {!namespace && <div className="well">Collecting additional details...</div>}
+              {!namespace && !stage.failureMessage && <div className="well">Collecting additional details...</div>}
             </dl>
           </div>
         </div>
