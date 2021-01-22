@@ -7,7 +7,9 @@ label: Pulumi
 uiType: CUSTOM
 waitForCompletion: true
 # Any parameters defined here must also have a corresponding UI field defined in
-# the Deck UI extension. Each parameter defined here MUST have a mapping property.
+# the Deck UI extension. Each parameter defined here MUST have a mapping property
+# and if applicable, a definition under the `env` property of the container spec
+# below.
 parameters:
   - name: account
     mapping: account
@@ -41,7 +43,7 @@ manifest:
   apiVersion: batch/v1
   kind: Job
   metadata:
-    generatedName: run-pulumi
+    name: run-pulumi
     # Will be overridden by the namespace the user selects from the UI.
     namespace: fakenamespace
   spec:
@@ -53,7 +55,7 @@ manifest:
           - name: pulumi
             image: pulumi/pulumi:latest
             command: ["/bin/sh"]
-            args: ["-c", "pulumi version && git clone $(GIT_REPO_URL) $(WORKING_DIR) && cd $(WORKING_DIR) && $(RESTORE_CMD) && pulumi --cwd $(WORKING_DIR) $(PULUMI_COMMAND_ARGS) $(PULUMI_COMMAND)"]
+            args: ["-c", "pulumi version && git clone $(GIT_REPO_URL) $(WORKING_DIR) && cd $(WORKING_DIR) && $(RESTORE_CMD) && pulumi $(PULUMI_COMMAND_ARGS) $(PULUMI_COMMAND)"]
             env:
               - name: GIT_REPO_URL
                 value: fakevalue
@@ -70,3 +72,4 @@ manifest:
             envFrom:
             - secretRef:
                 name: pulumiSecrets
+                optional: true
