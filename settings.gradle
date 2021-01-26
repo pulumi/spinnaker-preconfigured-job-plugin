@@ -8,7 +8,7 @@ pluginManagement {
 
 rootProject.name="spinnaker-preconfigured-job-plugin"
 
-include "pulumi-orca"
+include "pulumi-orca", "pulumi-deck"
 
 def setBuildFile(project) {
   project.buildFileName = "${project.name}.gradle"

@@ -1,5 +1,6 @@
 package com.pulumi.plugin.preconfigured
 
+import com.netflix.spinnaker.kork.exceptions.SystemException
 import com.netflix.spinnaker.kork.plugins.api.PluginSdks
 import com.netflix.spinnaker.orca.api.preconfigured.jobs.PreconfiguredJobConfigurationProvider
 import com.netflix.spinnaker.orca.clouddriver.config.KubernetesPreconfiguredJobProperties
@@ -21,24 +22,31 @@ class PulumiPlugin(wrapper: PluginWrapper): Plugin(wrapper) {
 }
 
 @Extension
-class PulumiPreConfiguredStage(val pluginSdks: PluginSdks, val configuration: PluginConfig) : PreconfiguredJobConfigurationProvider {
+class PulumiPreConfiguredStage(val pluginSdks: PluginSdks, val pluginConfig: PluginConfig) : PreconfiguredJobConfigurationProvider {
     private val logger = LoggerFactory.getLogger(PulumiPreConfiguredStage::class.java)
 
     override fun getJobConfigurations(): List<KubernetesPreconfiguredJobProperties> {
         val jobProperties = pluginSdks.yamlResourceLoader().loadResource("com/pulumi/plugin/preconfigured/pulumi.yaml", KubernetesPreconfiguredJobProperties::class.java)
-        if (!configuration.account.isNullOrEmpty()) {
-            jobProperties.account = configuration.account
+
+        if (!pluginConfig.account.isNullOrEmpty()) {
+            jobProperties.account = pluginConfig.account
         }
-        if (!configuration.namespace.isNullOrEmpty()) {
-            jobProperties.manifest.metadata.namespace = configuration.namespace
-        }
-        if (!configuration.sshConfigPath.isNullOrEmpty()) {
-            jobProperties.manifest.spec.template.spec.containers[0].addVolumeMountsItem(io.kubernetes.client.models.V1VolumeMount().mountPath(configuration.sshConfigPath))
+        if (!pluginConfig.namespace.isNullOrEmpty()) {
+            jobProperties.manifest.metadata.namespace = pluginConfig.namespace
         }
 
-        if (configuration.logJobProperties == true) {
-            logger.info("Job properties: ${pluginSdks.serde().toJson(jobProperties)}");
+        if (!pluginConfig.sshConfigPath.isNullOrEmpty()) {
+            jobProperties.manifest.spec.template.spec.containers[0].addVolumeMountsItem(io.kubernetes.client.models.V1VolumeMount().mountPath(pluginConfig.sshConfigPath))
         }
+
+        if (pluginConfig.logJobProperties == true) {
+            try {
+                logger.info("Job properties: ${pluginSdks.serde().toJson(jobProperties)}")
+            } catch (ex: SystemException) {
+                logger.error("Could not log the job properties", ex)
+            }
+        }
+
         return arrayListOf(jobProperties)
     }
 }
