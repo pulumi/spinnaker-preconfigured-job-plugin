@@ -60,7 +60,7 @@ manifest:
           - name: pulumi
             image: pulumi/pulumi:latest
             command: ["/bin/sh"]
-            args: ["-c", "pulumi version && git clone $(GIT_REPO_URL) $(WORKING_DIR) && cd $(WORKING_DIR) && $(RESTORE_CMD) && pulumi $(PULUMI_COMMAND_ARGS) $(PULUMI_COMMAND)"]
+            args: ["-c", "pulumi version && git clone $(GIT_REPO_URL) $(WORKING_DIR) && cd $(WORKING_DIR) && $(RESTORE_CMD) && pulumi login $(PULUMI_BACKEND_URL) && pulumi $(PULUMI_COMMAND_ARGS) $(PULUMI_COMMAND)"]
             env:
               - name: GIT_REPO_URL
                 value: fakevalue
