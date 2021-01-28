@@ -43,7 +43,10 @@ manifest:
   apiVersion: batch/v1
   kind: Job
   metadata:
-    name: run-pulumi
+    # As of Spinnaker v1.22 to have a unique suffix appended to the job name,
+    # we must set the generatedName property instead of name.
+    # Ref: https://spinnaker.io/community/releases/versions/1-22-4-changelog#breaking-change-suffix-no-longer-added-to-jobs-created-by-kuber
+    generatedName: run-pulumi
     # Will be overridden by the namespace the user selects from the UI.
     namespace: fakenamespace
   spec:
