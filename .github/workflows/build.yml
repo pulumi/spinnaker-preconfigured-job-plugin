@@ -26,3 +26,14 @@ jobs:
         with:
           name: dist
           path: build/distributions
+      # TESTING!! MUST REMOVE BEFORE MERGING!!
+      - name: add release to plugin repo
+        id: add-release
+        uses: armory-io/plugin-metadata-updater@master
+        env:
+          GITHUB_OAUTH: ${{ secrets.GH_PAT }}
+          JAVA_HOME: ""
+        with:
+          metadata: build/distributions/plugin-info.json
+          binary_url: https://github.com/pulumi/spinnaker-preconfigured-job-plugin/releases/download/v0.1.0/spinnaker-preconfigured-job-plugin-v0.1.0.zip
+          metadata_repo_url: https://github.com/pulumi/spinnaker-plugins-repository
