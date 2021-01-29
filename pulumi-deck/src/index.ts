@@ -3,6 +3,8 @@ import {
   IDeckPlugin,
 } from '@spinnaker/core';
 
+import { RunJobExecutionDetails } from "@spinnaker/kubernetes/lib/pipelines/stages/runJob/RunJobExecutionDetails";
+
 import { PulumiRunJobExecutionDetails } from './PulumiRunJobExecutionDetails';
 import { PulumiStageConfig } from './PulumiStageConfig';
 
