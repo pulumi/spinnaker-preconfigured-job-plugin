@@ -22,7 +22,7 @@
     "@uirouter/react": "1.0.2",
     "ansi_up": "4.0.4",
     "bufferutil": "4.0.2",
-    "dompurify": "1.0.4",
+    "dompurify": "2.0.17",
     "lodash-es": "4.17.15",
     "prop-types": "15.6.1",
     "rxjs": "5.4.2",
