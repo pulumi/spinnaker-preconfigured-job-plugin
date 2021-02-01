@@ -1,8 +1,8 @@
 package com.pulumi.plugin.preconfigured
 
-import com.netflix.spinnaker.kork.plugins.api.ExtensionConfiguration
+import com.netflix.spinnaker.kork.plugins.api.PluginConfiguration
 
-@ExtensionConfiguration("pulumi.PreConfiguredJobStage")
+@PluginConfiguration("pulumi.PreConfiguredJobStage")
 data class PluginConfig(
         var account: String?,
         var credentials: String?,

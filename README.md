@@ -1,3 +1,12 @@
+This plugin allows you to run Pulumi apps as jobs in your Spinnaker instance. 
+
+## Version Compatibility
+
+| Plugin  | Spinnaker Platform |
+|:----------- | :--------- |
+| 0.1.x  |  1.19.x - 1.22.x |
+| 0.2.x  | 1.23.x |
+
 ## Installation
 
 ### Add the Pulumi Spinnaker plugins repository
@@ -15,7 +24,7 @@ Install this plugin by running the following command using Halyard:
 > You can specify an older version number if you prefer to install an older version. See the available version numbers from https://raw.githubusercontent.com/pulumi/spinnaker-plugins-repository/master/plugins.json for this specific plugin.
 
 ```
-hal plugins add Pulumi.PreConfiguredJobPlugin --enabled true --version 0.1.0 --extensions pulumi.PreConfiguredJobStage
+hal plugins add Pulumi.PreConfiguredJobPlugin --enabled true --version <version> --extensions pulumi.PreConfiguredJobStage
 ```
 
 ### Add the Deck UI plugin
@@ -42,7 +51,7 @@ spinnaker:
 
 * `version`: Use version 0.1.0 or above since the custom Deck UI is only available starting from that version.
 
-## Migrating from 0.0.x to 0.1.x
+## Migrating from 0.0.x
 
 ### Working directory
 
