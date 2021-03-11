@@ -20,7 +20,7 @@
     "@types/dompurify": "~0.0.29",
     "@uirouter/core": "6.0.4",
     "@uirouter/react": "1.0.2",
-    "ansi_up": "4.0.4",
+    "ansi_up": "5.0.0",
     "bufferutil": "4.0.2",
     "dompurify": "2.0.17",
     "lodash-es": "4.17.15",
