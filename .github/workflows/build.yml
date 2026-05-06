@@ -22,7 +22,7 @@ jobs:
       - name: build
         run: ./gradlew releaseBundle
       - name: archive build artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: dist
           path: build/distributions
